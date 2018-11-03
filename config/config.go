@@ -11,19 +11,19 @@ type Service struct {
 }
 
 type Cockroach struct {
-	Host        string
+	Host     string
 	Port     string
-	User string
-	DbName      string
-	Password      string
-	Dialect string
+	User     string
+	DbName   string
+	Password string
+	Dialect  string
 }
 
 var Conf Service
 var isLoaded = false
 
 func Load() (Service, error) {
-	if (isLoaded == true) {
+	if isLoaded == true {
 		return Conf, nil
 	}
 	_, err := toml.DecodeFile(path, &Conf)

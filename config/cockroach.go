@@ -3,10 +3,9 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"log"
 	"sync"
-	_ "github.com/lib/pq"
-
 )
 
 type DBConnection struct {
