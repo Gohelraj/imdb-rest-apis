@@ -192,7 +192,11 @@ func GetMovieByTitle(w http.ResponseWriter, r *http.Request) {
 	var m Movie
 	switch err = rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err {
 	case sql.ErrNoRows:
-		api := gomdb.Init("9d22088a")
+		conf, err := config.Load()
+		if err != nil {
+			log.Println("conf loading failed:", err)
+		}
+		api := gomdb.Init(conf.Omdb.ApiKey)
 		query := &gomdb.QueryData{Title: title.Title, SearchType: gomdb.MovieSearch}
 		res, err := api.MovieByTitle(query)
 		if err != nil {
@@ -207,8 +211,8 @@ func GetMovieByTitle(w http.ResponseWriter, r *http.Request) {
 		if res.ImdbRating == "N/A" {
 			res.ImdbRating = "0"
 		}
-		imdbrating, err := strconv.ParseFloat(res.ImdbRating, 64)
-		_, err = DBConn.Exec("INSERT INTO movies (title, released_year, rating, genres) VALUES ($1, $2, $3, $4)", res.Title, res.Year, imdbrating, pq.Array(GenreArray))
+		imdbRating, err := strconv.ParseFloat(res.ImdbRating, 64)
+		_, err = DBConn.Exec("INSERT INTO movies (title, released_year, rating, genres) VALUES ($1, $2, $3, $4)", res.Title, res.Year, imdbRating, pq.Array(GenreArray))
 		if err != nil {
 			log.Fatal(err)
 		}

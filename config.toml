@@ -5,3 +5,6 @@ user = "root"
 dbName = "imdb"
 password = ""
 dialect = "postgres"
+
+[omdb]
+apikey = "" # Your omdb api key if you dont have than generate by visting : [http://www.omdbapi.com/apikey.aspx]

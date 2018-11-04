@@ -8,6 +8,7 @@ var path = "C:/Users/gohel/go/src/imdb_rest_api/config.toml"
 
 type Service struct {
 	Cockroach Cockroach
+	Omdb      Omdb
 }
 
 type Cockroach struct {
@@ -17,6 +18,10 @@ type Cockroach struct {
 	DbName   string
 	Password string
 	Dialect  string
+}
+
+type Omdb struct {
+	ApiKey string
 }
 
 var Conf Service
