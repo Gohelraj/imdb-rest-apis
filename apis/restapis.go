@@ -41,13 +41,13 @@ func GetMoviByID(w http.ResponseWriter, r *http.Request) {
 	id := params["id"]
 	rows, err := DBConn.Query("SELECT id, title, released_year, rating, genres FROM movies where id= $1", id)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	defer rows.Close()
 	var m Movie
 	for rows.Next() {
 		if err := rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}
 	json.NewEncoder(w).Encode(m)
@@ -59,14 +59,14 @@ func GetMoviesByYear(w http.ResponseWriter, r *http.Request) {
 	year := params["year"]
 	rows, err := DBConn.Query("SELECT id, title, released_year, rating, genres FROM movies where released_year= $1", year)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	defer rows.Close()
 	var m Movie
 	var movies []Movie
 	for rows.Next() {
 		if err := rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		movies = append(movies, Movie{ID: m.ID, Title: m.Title, ReleasedYear: m.ReleasedYear, Rating: m.Rating, Genres: m.Genres})
 	}
@@ -87,14 +87,14 @@ func GetMoviesByYearRange(w http.ResponseWriter, r *http.Request) {
 	}
 	rows, err := DBConn.Query("select id, title, released_year, rating, genres from movies where released_year between $1 and $2;", y.From, y.To)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	defer rows.Close()
 	var m Movie
 	var movies []Movie
 	for rows.Next() {
 		if err := rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		movies = append(movies, Movie{ID: m.ID, Title: m.Title, ReleasedYear: m.ReleasedYear, Rating: m.Rating, Genres: m.Genres})
 	}
@@ -118,17 +118,17 @@ func GetMoviesByRating(w http.ResponseWriter, r *http.Request) {
 	case "":
 		rows, err = DBConn.Query("select id, title, released_year, rating, genres from movies where rating= $1", count.RatingPoint)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	case "higher":
 		rows, err = DBConn.Query("select id, title, released_year, rating, genres from movies where rating > $1", count.RatingPoint)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	case "lower":
 		rows, err = DBConn.Query("select id, title, released_year, rating, genres from movies where rating < $1", count.RatingPoint)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}
 	defer rows.Close()
@@ -136,7 +136,7 @@ func GetMoviesByRating(w http.ResponseWriter, r *http.Request) {
 	var movies []Movie
 	for rows.Next() {
 		if err := rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		movies = append(movies, Movie{ID: m.ID, Title: m.Title, ReleasedYear: m.ReleasedYear, Rating: m.Rating, Genres: m.Genres})
 	}
@@ -159,13 +159,13 @@ func GetMoviesByGenres(w http.ResponseWriter, r *http.Request) {
 	for _, i := range genres.Genres {
 		rows, err := DBConn.Query("SELECT id, title, released_year, rating, genres from (SELECT id, title, released_year, rating, genres, generate_subscripts(genres, 1) AS s FROM movies) WHERE genres[s] = $1", i)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		defer rows.Close()
 		var m Movie
 		for rows.Next() {
 			if err := rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err != nil {
-				log.Fatal(err)
+				log.Print(err)
 			}
 			movies = append(movies, Movie{ID: m.ID, Title: m.Title, ReleasedYear: m.ReleasedYear, Rating: m.Rating, Genres: m.Genres})
 		}
@@ -187,7 +187,7 @@ func GetMovieByTitle(w http.ResponseWriter, r *http.Request) {
 	}
 	rows := DBConn.QueryRow("SELECT id, title, released_year, rating, genres FROM movies where title= $1", title.Title)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	var m Movie
 	switch err = rows.Scan(&m.ID, &m.Title, &m.ReleasedYear, &m.Rating, (*pq.StringArray)(&m.Genres)); err {
@@ -214,7 +214,7 @@ func GetMovieByTitle(w http.ResponseWriter, r *http.Request) {
 		imdbRating, err := strconv.ParseFloat(res.ImdbRating, 64)
 		_, err = DBConn.Exec("INSERT INTO movies (title, released_year, rating, genres) VALUES ($1, $2, $3, $4)", res.Title, res.Year, imdbRating, pq.Array(GenreArray))
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 		return
 	case nil:
@@ -234,7 +234,7 @@ func UpdateRatingOfMovie(w http.ResponseWriter, r *http.Request) {
 	}
 	rows, err := DBConn.Exec("update movies set rating= $1 where id= $2", movie.Rating, movie.ID)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	rowsAffected, err := rows.RowsAffected()
 	if rowsAffected == 0 {
@@ -258,7 +258,7 @@ func UpdateGenresOfMovie(w http.ResponseWriter, r *http.Request) {
 	for _, gener := range movie.Genres {
 		rows, err = DBConn.Exec("UPDATE movies SET genres = array_append(genres, $1) WHERE id= $2", gener, movie.ID)
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 	}
 	rowsAffected, err := rows.RowsAffected()
