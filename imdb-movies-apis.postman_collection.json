@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "bd058e33-baed-4d6c-a635-4341866a4d72",
+		"name": "imdb-movies-apis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetMoviesByYearRange",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"from\":2016,\n\t\"to\":2018\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/movies-by-year-range",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movies-by-year-range"
+					]
+				},
+				"description": "{\n\t\"from\":2016,\n\t\"to\":2018\n}\n\nGive Year range it will return all movies between given range"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMoviesByYear",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/movies-by-year/2018",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movies-by-year",
+						"2018"
+					]
+				},
+				"description": "http://localhost:8000/movies-by-year/{year} - Give year to it and it will return all the movies stored in DB which has given release year."
+			},
+			"response": []
+		},
+		{
+			"name": "GetMoviesByRating",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"rating\":5.6,\n\t\"filterby\":\"higher\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/movies-by-rating",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movies-by-rating"
+					]
+				},
+				"description": "*If you want movie with higher rating than given rating pass \"higher\" in filerby and pass \"lower\" if you want movies with lower than given rating\n *If you want specific rated movie than pass only rating \n \n {\n\t\"rating\":5.6,\n\t\"filterby\":\"higher\" //lower,higher,\"\"\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMoviesByGenres",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"genres\":[\"Action\",\"Horror\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/movies-by-genres",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movies-by-genres"
+					]
+				},
+				"description": "*If you want movie of multiple genres than Pass Array of genres\n*If you want single genre movies than pass only one gener in array\n\n{\n\t\"genres\":[\"Action\"]   //[\"Action\",\"Horror\"]\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMovieByID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/movie/397167426999320577",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movie",
+						"397167426999320577"
+					]
+				},
+				"description": "http://localhost:8000/movie/{id}- Give ID from DB to get Details of specific movie"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMoviebyTitle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"Venom\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/movie-by-title",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"movie-by-title"
+					]
+				},
+				"description": "*Pass title name in JSON body to get data of that movie\n*It will first find data in DB if not found there than it Fetch data from imdb-api and store that data in Local DB\n{\n\t\"title\":\"Venom\" //Movie tital\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateRatingsOfMovieByID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"rating\":5.8,\n\t\"id\":397167578101645313\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/update-ratings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"update-ratings"
+					]
+				},
+				"description": "*Give rating that you want to update for specific movie\n*Give ID from DB\n\n{\n\t\"rating\":5.8,\t\t\t//Ratings to update\n\t\"id\":397167578101645313 //Local Database ID\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateGenresOfMovieByID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"genres\":[\"Action, Adventure\"],\n\t\"id\":397171819297308673\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/update-genres",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"update-genres"
+					]
+				},
+				"description": "*Give array of Geners which you want to update for specfic movie\n*Give single value in array if you want to update only single Gener for movie\n{\n\t\"genres\":[\"Action\"],\t\t//Genres to UPDATE\t\n\t\"id\":397167578101645313     //Local Database ID\n}"
+			},
+			"response": []
+		}
+	]
+}
